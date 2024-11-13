@@ -99,54 +99,42 @@
     </footer>
 
     <script>
-        // Fetch and display the movie list when the page loads
-        // Replace the fetch call with a static movie list for testing
-        async function loadMovies() {
-    try {
-        const response = await fetch('/movies');
-        const movies = await response.json();
-        const movieList = document.getElementById('movieList');
-        movieList.innerHTML = ''; // Clear existing items
-
-        // Loop through the movie collection and add each item
-        movies.forEach(movie => {
-            const li = document.createElement('li');
-            li.textContent = `${movie.title} - ${movie.genre}`;
-            movieList.appendChild(li);
-        });
-    } catch (error) {
-        console.error('Could not load movies:', error);
-    }
-}
-
-
+        // Load movies from local storage and display them
+        function loadMovies() {
+            const movies = JSON.parse(localStorage.getItem('movies')) || [];
+            const movieList = document.getElementById('movieList');
+            movieList.innerHTML = '';
+            movies.forEach(movie => {
+                const li = document.createElement('li');
+                li.textContent = `${movie.title} - ${movie.genre}`;
+                movieList.appendChild(li);
+            });
+        }
     
-        document.getElementById('movieForm').addEventListener('submit', async function(event) {
+        // Handle movie form submission
+        document.getElementById('movieForm').addEventListener('submit', function(event) {
             event.preventDefault();
     
             const title = document.getElementById('title').value;
             const genre = document.getElementById('genre').value;
     
-            try {
-                const response = await fetch('/submit-movie', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title, genre })
-                });
-    
-                const result = await response.json();
-                alert(result.message);
+            if (title && genre) {
+                // Retrieve existing movies from local storage, or create an empty array
+                const movies = JSON.parse(localStorage.getItem('movies')) || [];
+                // Add the new movie to the array
+                movies.push({ title, genre });
+                // Save the updated array back to local storage
+                localStorage.setItem('movies', JSON.stringify(movies));
+                // Clear form inputs
                 document.getElementById('movieForm').reset();
-                loadMovies(); // Reload the movie list after submission
-            } catch (error) {
-                console.error('Error submitting movie:', error);
-                alert('There was an error submitting the movie.');
+                // Reload the movie list
+                loadMovies();
+            } else {
+                alert('Please fill in all fields.');
             }
         });
     
-        // Load the movie list when the page loads
+        // Load the movie list on page load
         loadMovies();
     </script>
     
-</body>
-</html>
