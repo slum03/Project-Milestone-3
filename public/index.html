@@ -71,7 +71,6 @@
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
             <a href="contact.html">Contact</a>
-            <img src="IMG_6906.jpg" alt="Description of Image">
         </nav>
     </header>
     <main>
@@ -102,44 +101,49 @@
     <script>
         // Fetch and display the movie list when the page loads
         async function loadMovies() {
-            const response = await fetch('/movies');
-            const movies = await response.json();
-            const movieList = document.getElementById('movieList');
-            movieList.innerHTML = '';
-            movies.forEach(movie => {
-                const li = document.createElement('li');
-                li.textContent = `${movie.title} - ${movie.genre}`;
-                movieList.appendChild(li);
-            });
+            try {
+                const response = await fetch('/movies');
+                if (!response.ok) throw new Error('Failed to load movies');
+                const movies = await response.json();
+                const movieList = document.getElementById('movieList');
+                movieList.innerHTML = ''; // Clear current list
+                movies.forEach(movie => {
+                    const li = document.createElement('li');
+                    li.textContent = `${movie.title} - ${movie.genre}`;
+                    movieList.appendChild(li);
+                });
+            } catch (error) {
+                console.error('Error loading movies:', error);
+                alert('Could not load movies.');
+            }
         }
-
-        // Handle movie form submission
+    
         document.getElementById('movieForm').addEventListener('submit', async function(event) {
             event.preventDefault();
-
+    
             const title = document.getElementById('title').value;
             const genre = document.getElementById('genre').value;
-
-            const response = await fetch('/submit-movie', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ title, genre })
-            });
-
-            const result = await response.json();
-            alert(result.message);
-
-            // Clear form inputs
-            document.getElementById('movieForm').reset();
-
-            // Reload the movie list
-            loadMovies();
+    
+            try {
+                const response = await fetch('/submit-movie', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, genre })
+                });
+    
+                const result = await response.json();
+                alert(result.message);
+                document.getElementById('movieForm').reset();
+                loadMovies(); // Reload the movie list after submission
+            } catch (error) {
+                console.error('Error submitting movie:', error);
+                alert('There was an error submitting the movie.');
+            }
         });
-
-        // Load the movie list on page load
+    
+        // Load the movie list when the page loads
         loadMovies();
     </script>
+    
 </body>
 </html>

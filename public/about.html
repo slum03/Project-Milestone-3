@@ -38,15 +38,17 @@
             padding: 20px;
         }
         #image {
-            flex: 1;
-            background-image: url('/IMG_6906.jpg');
-            background-size: cover;
-            background-position: center;
-            border: 2px solid #002366; /* Optional: adds a border around the image */
-            height: 100%; /* Full height to fill the section */
-            width: 100%; /* Full width to fill the section */
-            aspect-ratio: 1; /* Keep the aspect ratio as square */
-        }
+    flex: 1;
+    background-image: url('/IMG_6906.jpg');
+    background-size: contain;  /* Ensures the whole image fits within the container */
+    background-position: center;
+    border: 2px solid #002366; /* Optional: adds a border around the image */
+    height: 100vh; /* Full height of the viewport */
+    width: 100%; /* Full width to fill the section */
+    background-repeat: no-repeat;  /* Prevents repeating the image */
+}
+
+
     </style>
 </head>
 <body>
