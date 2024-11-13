@@ -101,20 +101,24 @@
     <script>
         // Fetch and display the movie list when the page loads
         // Replace the fetch call with a static movie list for testing
-async function loadMovies() {
-    const movies = [
-        { title: 'Movie 1', genre: 'Action' },
-        { title: 'Movie 2', genre: 'Comedy' },
-        { title: 'Movie 3', genre: 'Drama' }
-    ];
-    const movieList = document.getElementById('movieList');
-    movieList.innerHTML = '';
-    movies.forEach(movie => {
-        const li = document.createElement('li');
-        li.textContent = `${movie.title} - ${movie.genre}`;
-        movieList.appendChild(li);
-    });
+        async function loadMovies() {
+    try {
+        const response = await fetch('/movies');
+        const movies = await response.json();
+        const movieList = document.getElementById('movieList');
+        movieList.innerHTML = ''; // Clear existing items
+
+        // Loop through the movie collection and add each item
+        movies.forEach(movie => {
+            const li = document.createElement('li');
+            li.textContent = `${movie.title} - ${movie.genre}`;
+            movieList.appendChild(li);
+        });
+    } catch (error) {
+        console.error('Could not load movies:', error);
+    }
 }
+
 
     
         document.getElementById('movieForm').addEventListener('submit', async function(event) {
